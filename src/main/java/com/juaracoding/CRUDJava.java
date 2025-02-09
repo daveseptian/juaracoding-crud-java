@@ -1,6 +1,8 @@
 package com.juaracoding;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Scanner;
 
 public class CRUDJava {
@@ -81,7 +83,7 @@ public class CRUDJava {
     private static void PrintData(){
         if(listBarang.size() == listHargaBarang.size()){
             for(int i = 0; i < listBarang.size(); i++){
-                System.out.println((i+1) + ". " + listBarang.get(i) + " (Rp. " + listHargaBarang.get(i) + " Stok : " + listStockBarang.get(i) + ") ");
+                System.out.println((i+1) + ". " + listBarang.get(i));
             }
         }
         else{
@@ -90,12 +92,31 @@ public class CRUDJava {
     }
 
     private static void Create(){
-        System.out.print("Masukkan nama barang : ");
-        listBarang.add(input.nextLine());
-        System.out.println();
+        while(true){
+            System.out.print("Masukkan nama barang : ");
+            String namaBarang = input.nextLine();
 
-        System.out.print("Masukkan harga barang : ");
-        listHargaBarang.add(Integer.parseInt(input.nextLine()));
+            System.out.print("Masukkan harga barang : ");
+            String strHargaBarang = input.nextLine();
+
+            System.out.print("Masukkan stok barang : ");
+            String strStokBarang = input.nextLine();
+
+            if(isNumeric(strHargaBarang) && isNumeric(strStokBarang)){
+                int hargaBarang = Integer.parseInt(strHargaBarang);
+                int stokBarang = Integer.parseInt(strStokBarang);
+
+                if(hargaBarang >= 0 && stokBarang >= 0){
+                    listBarang.add(namaBarang);
+                    listHargaBarang.add(hargaBarang);
+                    listStockBarang.add(stokBarang);
+                    break;
+                }
+                else {
+                    System.out.println("Maaf data yang anda masukkan tidak valid");
+                }
+            }
+        }
     }
 
     private static void Read(){
@@ -105,7 +126,7 @@ public class CRUDJava {
             System.out.print("Pilih data barang yang ingin dilihat : ");
             int index = Integer.parseInt(input.nextLine());
 
-            System.out.println((index) + ". " + listBarang.get(index-1) + " (Rp. " + listHargaBarang.get(index-1) + ")");
+            System.out.println((index) + ". " + listBarang.get(index-1) + " (Rp. " + listHargaBarang.get(index-1)+ " Stok : " + listStockBarang.get(index-1) + ") ");
         }
         else{
             System.out.println("Tidak terdapat data saat ini");
@@ -113,28 +134,48 @@ public class CRUDJava {
     }
 
     private static void Update(){
-        PrintData();
+        while(true){
+            PrintData();
 
-        System.out.print("Pilih data barang yang ingin diubah : ");
-        int index = input.nextInt();
+            System.out.print("Pilih data barang yang ingin diubah : ");
+            int index = Integer.parseInt(input.nextLine());
 
-        System.out.print("Masukkan nama barang yang baru : ");
-        String newName = input.nextLine();
+            System.out.print("Masukkan nama barang yang baru : ");
+            String newName = input.nextLine();
 
-        System.out.print("Masukkan harga barang yang baru : ");
-        Integer newPrice = Integer.parseInt(input.nextLine());
+            System.out.print("Masukkan harga barang yang baru : ");
+            String strPrice = input.nextLine();
 
-        listBarang.set(index, newName);
-        listHargaBarang.set(index, newPrice);
+            System.out.print("Masukkan harga barang yang baru : ");
+            String strStock = input.nextLine();
 
-        System.out.println("Data sudah terupdate!");
+            if(isNumeric(strStock) || isNumeric(strPrice)){
+                System.out.println("Maaf input anda tidak valid");
+                continue;
+            }
+
+            int newPrice = Integer.parseInt(strPrice);
+            int newStock = Integer.parseInt(strStock);
+
+            if(newPrice >= 0 && newStock >= 0){
+                listBarang.set(index, newName);
+                listHargaBarang.set(index, newPrice);
+                listStockBarang.set(index, newStock);
+
+                System.out.println("Data sudah terupdate!");
+                break;
+            }
+            else{
+                System.out.println("Maaf input anda tidak valid");
+            }
+        }
     }
 
     private static void Delete(){
         PrintData();
 
         System.out.print("Pilih data barang yang ingin dihapus : ");
-        Integer index = Integer.parseInt(input.nextLine());
+        int index = Integer.parseInt(input.nextLine());
 
         System.out.println("Apakah anda yakin ingin menghapus barang " + listBarang.get(index) + "? (Y/N)");
         String answer = input.nextLine();
@@ -152,7 +193,7 @@ public class CRUDJava {
 
         for(int i = 0; i < listBarang.size(); i++){
             if (listBarang.get(i).equalsIgnoreCase(searchBarang)){
-                System.out.println("Kami menemukan barang " + searchBarang + " pada inventori kami di indeks ke-" + (i+1) + "!");
+                System.out.println("Kami menemukan barang [" + searchBarang + "] pada inventori kami di indeks ke-[" + (i+1) + "]!");
                 isFound = true;
             }
         }
@@ -296,5 +337,14 @@ public class CRUDJava {
         listHargaBarang = tempListHargaBarang;
 
         PrintData();
+    }
+
+    static boolean isNumeric(String str){
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
     }
 }
