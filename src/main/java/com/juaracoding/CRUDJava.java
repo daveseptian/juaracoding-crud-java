@@ -1,17 +1,19 @@
 package com.juaracoding;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.Scanner;
 
 public class CRUDJava {
+    //deklarasi global untuk kemudahan saja
+    //variabel-variabel ArrayList dapat dideklarasikan di dalam main
+    //dan dijadikan parameter untuk setiap method
     static Scanner input = new Scanner(System.in);
     static ArrayList<String> listBarang = new ArrayList<>();
     static ArrayList<Integer> listHargaBarang = new ArrayList<>();
     static ArrayList<Integer> listStockBarang = new ArrayList<>();
 
     public static void main(String[] args) {
+        //data hanya untuk pengujian saja
         listBarang.add("hitam");
         listBarang.add("putih");
         listBarang.add("kuning");
@@ -44,50 +46,59 @@ public class CRUDJava {
 
     public static void PrintMenu(){
         while(true){
+            //Menampilkan menu-menu yang dapat diakses, ketik 0 untuk keluar
             System.out.println("===Menu CRUD Toko Madu===");
-            System.out.println("1. Create");
-            System.out.println("2. Read");
-            System.out.println("3. Update");
-            System.out.println("4. Delete");
-            System.out.println("5. Search");
-            System.out.println("6. Sort");
-            System.out.println("0. Close");
+            System.out.println("1. Tambah Produk");
+            System.out.println("2. Detail Produk");
+            System.out.println("3. Ubah Produk");
+            System.out.println("4. Hapus Produk");
+            System.out.println("5. Cari Produk");
+            System.out.println("6. Urutkan Produk");
+            System.out.println("0. Tutup");
 
             System.out.print("Pilihan : ");
             String choice = input.nextLine();
 
             if (choice.equalsIgnoreCase("1")){
-                Create();
+                Create(); //Mengakses menu menambahkan data
             }
             else if (choice.equalsIgnoreCase("2")){
-                Read();
+                Read(); //Mengakses menu untuk melihat detil data
             }
             else if (choice.equalsIgnoreCase("3")){
-                Update();
+                Update(); //Mengakses menu untuk mengubah data
             }
             else if (choice.equalsIgnoreCase("4")){
-                Delete();
+                Delete(); //Mengakses menu untuk menghapus data secara fisik
             }
             else if (choice.equalsIgnoreCase("5")){
-                SearchMenu();
+                SearchMenu(); //Membuka menu mencari data
             }
             else if (choice.equalsIgnoreCase("6")){
-                SortMenu();
+                SortMenu(); //Membuka menu untuk mensortir data
             }
             else if (choice.equalsIgnoreCase("0")){
-                break;
+                break; //Keluar dari loop, sehingga program tertutup
             }
         }
     }
 
     private static void PrintData(){
-        if(listBarang.size() == listHargaBarang.size()){
-            for(int i = 0; i < listBarang.size(); i++){
-                System.out.println((i+1) + ". " + listBarang.get(i));
+        if(!listBarang.isEmpty() && !listStockBarang.isEmpty() && !listHargaBarang.isEmpty()){
+            if(listBarang.size() == listHargaBarang.size() && listBarang.size() == listStockBarang.size()){
+                for(int i = 0; i < listBarang.size(); i++){
+                    //Menampilkan data
+                    System.out.println((i+1) + ". " + listBarang.get(i));
+                }
+            }
+            else{
+                //Jika jumlah dari ketiga data tidak sama persis jumlahnya, maka ada yang salah
+                System.out.println("Terdapat kesalahan pada data");
             }
         }
         else{
-            System.out.println("Terdapat kesalahan pada data");
+            //Jika tidak terdapat data ketika ingin menampilkan data
+            System.out.println("Data kosong saat ini");
         }
     }
 
@@ -102,10 +113,12 @@ public class CRUDJava {
             System.out.print("Masukkan stok barang : ");
             String strStokBarang = input.nextLine();
 
+            //Memeriksa apakah data dalam bentuk angka atau tidak
             if(isNumeric(strHargaBarang) && isNumeric(strStokBarang)){
                 int hargaBarang = Integer.parseInt(strHargaBarang);
                 int stokBarang = Integer.parseInt(strStokBarang);
 
+                //Harga dan Stok harus angka positif
                 if(hargaBarang >= 0 && stokBarang >= 0){
                     listBarang.add(namaBarang);
                     listHargaBarang.add(hargaBarang);
@@ -113,20 +126,24 @@ public class CRUDJava {
                     break;
                 }
                 else {
-                    System.out.println("Maaf data yang anda masukkan tidak valid");
+                    System.out.println("Maaf data yang anda masukkan tidak valid, harga dan stok barang harus positif");
                 }
             }
         }
     }
 
     private static void Read(){
+        //Periksa apakah data kosong atau tidak
         if(!listBarang.isEmpty()){
             PrintData();
 
             System.out.print("Pilih data barang yang ingin dilihat : ");
             int index = Integer.parseInt(input.nextLine());
 
-            System.out.println((index) + ". " + listBarang.get(index-1) + " (Rp. " + listHargaBarang.get(index-1)+ " Stok : " + listStockBarang.get(index-1) + ") ");
+            //Menunjukkan detil dari barang yang dipilih
+            System.out.println((index) + ". " + listBarang.get(index-1)
+                    + " \nRp. " + listHargaBarang.get(index-1)+ " \nStok : "
+                    + listStockBarang.get(index-1));
         }
         else{
             System.out.println("Tidak terdapat data saat ini");
@@ -137,97 +154,147 @@ public class CRUDJava {
         while(true){
             PrintData();
 
-            System.out.print("Pilih data barang yang ingin diubah : ");
-            int index = Integer.parseInt(input.nextLine());
+            //Memeriksa apakah terdapat data atau tidak
+            if(!listBarang.isEmpty() && !listStockBarang.isEmpty() && !listHargaBarang.isEmpty()) {
 
-            System.out.print("Masukkan nama barang yang baru : ");
-            String newName = input.nextLine();
+                System.out.print("Pilih data barang yang ingin diubah : ");
+                int index = Integer.parseInt(input.nextLine());
 
-            System.out.print("Masukkan harga barang yang baru : ");
-            String strPrice = input.nextLine();
+                System.out.print("Masukkan nama barang yang baru : ");
+                String newName = input.nextLine();
 
-            System.out.print("Masukkan harga barang yang baru : ");
-            String strStock = input.nextLine();
+                System.out.print("Masukkan harga barang yang baru : ");
+                String strPrice = input.nextLine();
 
-            if(isNumeric(strStock) || isNumeric(strPrice)){
-                System.out.println("Maaf input anda tidak valid");
-                continue;
+                System.out.print("Masukkan stok barang yang baru : ");
+                String strStock = input.nextLine();
+
+                //Memeriksa apakah stok dan harga dalam bentuk numerik atau tidak
+                if (isNumeric(strStock) || isNumeric(strPrice)) {
+                    System.out.println("Maaf input anda tidak valid, harga dan stok harus dalam bentuk angka");
+                    continue;
+                }
+
+                int newPrice = Integer.parseInt(strPrice);
+                int newStock = Integer.parseInt(strStock);
+
+                //Memeriksa apakah harga dan stok bernilai positif
+                if (newPrice >= 0 && newStock >= 0) {
+                    listBarang.set(index, newName);
+                    listHargaBarang.set(index, newPrice);
+                    listStockBarang.set(index, newStock);
+
+                    System.out.println("Data sudah terupdate!");
+                    break;
+                } else {
+                    System.out.println("Maaf input anda tidak valid, harga dan stok harus angka positif");
+                }
             }
-
-            int newPrice = Integer.parseInt(strPrice);
-            int newStock = Integer.parseInt(strStock);
-
-            if(newPrice >= 0 && newStock >= 0){
-                listBarang.set(index, newName);
-                listHargaBarang.set(index, newPrice);
-                listStockBarang.set(index, newStock);
-
-                System.out.println("Data sudah terupdate!");
-                break;
-            }
-            else{
-                System.out.println("Maaf input anda tidak valid");
-            }
+            else break;
         }
     }
 
     private static void Delete(){
-        PrintData();
+        while(true){
+            PrintData();
 
-        System.out.print("Pilih data barang yang ingin dihapus : ");
-        int index = Integer.parseInt(input.nextLine());
+            //Memeriksa apakah data kosong atau tidak
+            if(!listBarang.isEmpty() && !listStockBarang.isEmpty() && !listHargaBarang.isEmpty()) {
 
-        System.out.println("Apakah anda yakin ingin menghapus barang " + listBarang.get(index) + "? (Y/N)");
-        String answer = input.nextLine();
+                System.out.print("Pilih data barang yang ingin dihapus : ");
+                String strIndex = input.nextLine();
 
-        if (answer.equalsIgnoreCase("y")){
-            listBarang.remove(listBarang.get(index));
-            listHargaBarang.remove(listHargaBarang.get(index));
+                //Memeriksa apakah memilih angka pada menu atau tidak karena akan dijadikan index
+                if (isNumeric(strIndex)) {
+                    //Dikurangi 1 karena index yang dimasukkan dimulai dari angka 1
+                    int index = Integer.parseInt(strIndex) - 1;
+
+                    System.out.println("Apakah anda yakin ingin menghapus barang " + listBarang.get(index) + "? (Y/N)");
+                    String answer = input.nextLine();
+
+                    if (answer.equalsIgnoreCase("y")) {
+                        String namaBarang = listBarang.get(index);
+                        int hargaBarang = listHargaBarang.get(index);
+                        int stokBarang = listStockBarang.get(index);
+
+                        listBarang.remove(namaBarang);
+                        listHargaBarang.remove(hargaBarang);
+                        listStockBarang.remove(stokBarang);
+                        System.out.println("Data barang [" + namaBarang + "] sudah dihapus!");
+                        break;
+                    }
+                }
+            }
+            else break;
         }
     }
 
     private static void SearchMenu(){
-        System.out.print("Masukkan nama barang yang ingin Anda cari : ");
-        String searchBarang = input.nextLine();
-        boolean isFound = false;
+        PrintData();
 
-        for(int i = 0; i < listBarang.size(); i++){
-            if (listBarang.get(i).equalsIgnoreCase(searchBarang)){
-                System.out.println("Kami menemukan barang [" + searchBarang + "] pada inventori kami di indeks ke-[" + (i+1) + "]!");
-                isFound = true;
+        //Memeriksa apakah data kosong atau tidak
+        if(!listBarang.isEmpty() && !listStockBarang.isEmpty() && !listHargaBarang.isEmpty()) {
+            System.out.print("Masukkan nama barang yang ingin Anda cari : ");
+            String searchBarang = input.nextLine();
+            boolean isFound = false;
+
+            //Mencoba mencari data ada di dalam list atau tidak
+            for (int i = 0; i < listBarang.size(); i++) {
+                if (listBarang.get(i).equalsIgnoreCase(searchBarang)) {
+                    isFound = true;
+                }
             }
-        }
 
-        System.out.println(!isFound ? "Maaf barang yang Anda masukkan tidak terdapat pada inventori kami" : "");
+            System.out.println(!isFound
+                    ? "Maaf barang yang Anda masukkan tidak terdapat pada inventori kami"
+                    : "Kami menemukan barang [" + searchBarang + "] pada inventori kami!"
+            );
+        }
     }
 
     private  static void SortMenu(){
-        System.out.println("===Menu Sorting===");
 
-        System.out.println("1. Sorting berdasarkan harga");
-        System.out.println("2. Sorting berdasarkan stok");
+        if(!listBarang.isEmpty() && !listStockBarang.isEmpty() && !listHargaBarang.isEmpty()){
+            while(true){
 
-        int choice = Integer.parseInt(input.nextLine());
+                //Menampilkan pilihan menu sortir
+                System.out.println("===Menu Sorting===");
 
-        System.out.println("1. Sorting dari kecil ke besar (ascending)");
-        System.out.println("2. Sorting dari besar ke kecil (descending)");
+                System.out.println("1. Sorting berdasarkan harga");
+                System.out.println("2. Sorting berdasarkan stok");
 
-        int sortOrder = Integer.parseInt(input.nextLine());
+                String strChoice = input.nextLine();
 
-        if(choice == 1){
-            if(sortOrder == 1){
-                PrintSort("harga", "asc");
-            }
-            else if(sortOrder == 2){
-                PrintSort("harga", "desc");
-            }
-        }
-        else if(choice == 2){
-            if(sortOrder == 1){
-                PrintSort("stok", "asc");
-            }
-            else if(sortOrder == 2){
-                PrintSort("stok", "desc");
+                System.out.println("1. Sorting dari kecil ke besar (ascending)");
+                System.out.println("2. Sorting dari besar ke kecil (descending)");
+
+                String strSortOrder = input.nextLine();
+
+                if(isNumeric(strChoice) && isNumeric(strSortOrder)){
+                    int choice = Integer.parseInt(strChoice);
+                    int sortOrder = Integer.parseInt(strSortOrder);
+
+                    if(choice == 1){
+                        if(sortOrder == 1){
+                            PrintSort("harga", "asc");
+                            break;
+                        }
+                        else if(sortOrder == 2){
+                            PrintSort("harga", "desc");
+                            break;
+                        }
+                    }
+                    else if(choice == 2) {
+                        if (sortOrder == 1) {
+                            PrintSort("stok", "asc");
+                            break;
+                        } else if (sortOrder == 2) {
+                            PrintSort("stok", "desc");
+                            break;
+                        }
+                    }
+                }
+                else break;
             }
         }
     }
@@ -336,7 +403,14 @@ public class CRUDJava {
         listBarang = templistBarang;
         listHargaBarang = tempListHargaBarang;
 
-        PrintData();
+        System.out.println("Data sudah diurutkan berdasarkan " + sortBy
+                + "secara "
+                + (
+                    sortOrder.equalsIgnoreCase("asc")
+                            ? "dari kecil ke besar"
+                            : "dari besar ke kecil"
+                )
+        );
     }
 
     static boolean isNumeric(String str){
